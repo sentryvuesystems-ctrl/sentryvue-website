@@ -1,0 +1,1 @@
+# SentryVue Systems Website\n\nProfessional CCTV Installation - See More. Stay Secure.\n\nBuilt with Next.js, Tailwind CSS, and Framer Motion.
