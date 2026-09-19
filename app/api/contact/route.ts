@@ -3,63 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma.ts'
 
-/**
- * Sends a notification for a new enquiry.
- *
- * NOTE: This project does not currently ship a mail transport (no nodemailer /
- * sendgrid / resend dependency and no SMTP_* / EMAIL_* env vars are defined).
- * To keep the enquiry flow working out of the box we log a fully-formatted
- * notification (including the CCTV configurator summary) to the server console.
- *
- * To enable real email delivery, add credentials via environment variables ONLY
- * (e.g. SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, ENQUIRY_NOTIFICATION_TO) and
- * wire a transport in the marked section below — do not hard-code credentials.
- */
-async function sendEnquiryNotification(details: {
-  fullName: string
-  email: string
-  phone: string
-  postcode: string
-  propertyType: string
-  cameraCount: string
-  installationDate?: string | null
-  notes?: string | null
-  configuratorSummary?: string | null
-}) {
-  const emailBody = [
-    'New CCTV enquiry received via the SentryVue website.',
-    '',
-    `Name:          ${details.fullName}`,
-    `Email:         ${details.email}`,
-    `Phone:         ${details.phone}`,
-    `Postcode:      ${details.postcode}`,
-    `Property type: ${details.propertyType}`,
-    `Cameras:       ${details.cameraCount}`,
-    `Install date:  ${details.installationDate || 'Not specified'}`,
-    '',
-    'Additional notes:',
-    details.notes || '(none)',
-    '',
-    // Include the configurator selections in the notification body when present.
-    ...(details.configuratorSummary
-      ? ['CCTV Quote Configurator selections:', details.configuratorSummary]
-      : []),
-  ].join('\n')
-
-  // --- Begin mail transport section (add env-var-based credentials to enable) ---
-  // Example (requires adding a transport dependency + env vars):
-  //   if (process.env.SMTP_HOST && process.env.ENQUIRY_NOTIFICATION_TO) {
-  //     await transport.sendMail({
-  //       to: process.env.ENQUIRY_NOTIFICATION_TO,
-  //       from: process.env.SMTP_USER,
-  //       subject: `New CCTV enquiry — ${details.fullName}`,
-  //       text: emailBody,
-  //     })
-  //   }
-  // --- End mail transport section ---
-
-  console.info('[enquiry-notification]\n' + emailBody)
-}
+import { sendEnquiryNotifications } from '@/lib/notifications'
 
 export async function POST(req: NextRequest) {
   try {
@@ -118,18 +62,19 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // Fire the notification but never let a notification failure break the submission.
+    // Fire the email notification but never let a notification failure break the submission.
     try {
-      await sendEnquiryNotification({
-        fullName: String(fullName ?? ''),
-        email: String(email ?? ''),
-        phone: String(phone ?? ''),
-        postcode: String(postcode ?? ''),
-        propertyType: String(propertyType ?? ''),
-        cameraCount: String(cameraCount ?? ''),
-        installationDate: installationDate ? String(installationDate) : null,
-        notes: rawNotes || null,
-        configuratorSummary: summary || null,
+      await sendEnquiryNotifications({
+        id: submission.id,
+        fullName: submission.fullName,
+        email: submission.email,
+        phone: submission.phone,
+        postcode: submission.postcode,
+        propertyType: submission.propertyType,
+        cameraCount: submission.cameraCount,
+        installationDate: submission.installationDate,
+        notes: submission.notes,
+        createdAt: submission.createdAt,
       })
     } catch (notifyError) {
       console.error('Enquiry notification error:', notifyError)

@@ -30,3 +30,4 @@ next-env.d.ts
 
 # prisma generated client (generated via `prisma generate`)
 /prisma/generated
+.neon
