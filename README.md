@@ -51,3 +51,24 @@ The email notification is formatted as an order sheet and includes the SentryVue
 - Persistent data belongs in PostgreSQL, not the local filesystem.
 - Email provider credentials must be configured per host as environment variables.
 - Domain DNS, HTTPS, and any provider callback/verification settings must be updated when changing hosts.
+
+## Updating gallery photos
+
+Gallery photos are stored in `public/gallery/` and listed in `app/components/gallery.tsx`. To update them:
+
+1. Add each new image to `public/gallery/` using a short filename such as `driveway-installation.jpg`.
+2. Open `app/components/gallery.tsx` and update the `galleryImages` list:
+
+```ts
+{
+  src: '/gallery/driveway-installation.jpg',
+  alt: 'CCTV camera installed above a residential driveway',
+  span: '',
+}
+```
+
+3. Use a descriptive `alt` text and remove the old image entry if it should no longer appear.
+4. Commit and push the change to the production branch; Vercel will build a new deployment.
+5. Check the deployment preview before promoting it to production.
+
+Use images you own or have permission to publish. Keep files reasonably compressed (WebP or optimized JPG is preferred) and do not put private customer details in filenames or metadata.
