@@ -7,8 +7,10 @@ import { useState } from 'react'
 
 const galleryImages = [
   {
-    src: 'https://images.unsplash.com/photo-1765718826790-909aa08ac771?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    alt: 'Security camera monitoring urban cityscape at night',
+    src: '/gallery/cctv-cameras.jpg',
+    alt: 'Multiple CCTV cameras photographed in a real installation setting',
+    credit: "CCTV Camera's by Eliomak Consults & Engineering Ltd",
+    creditUrl: 'https://commons.wikimedia.org/wiki/File:CCTV_Camera%27s.jpg',
     span: 'md:col-span-2 md:row-span-2',
   },
   {
@@ -17,24 +19,21 @@ const galleryImages = [
     span: '',
   },
   {
-    src: 'https://plus.unsplash.com/premium_photo-1749319835955-9c5293f6b1a3?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    alt: 'Security monitoring control room with multiple camera feeds',
-    span: '',
-  },
-  {
-    src: 'https://avorliving.com/assets/res-security-dusk-home-CQ6Wo9c_.jpg',
-    alt: 'Modern residential property with security cameras at dusk',
-    span: '',
-  },
-  {
     src: 'https://cdn.shopify.com/s/files/1/0504/7094/4954/files/eufycam-s3-pro-color-night-vision-3.jpg?v=1742364535',
-    alt: 'ColorVu night vision camera providing full colour footage in darkness',
+    alt: 'Colour night-vision security camera footage in darkness',
     span: '',
   },
   {
     src: 'https://static.professional-electrician.com/professional-electrician/uploads/2020/01/Increase-in-tester-use-by-CCTV-installers-reports-IDEAL-Networks-c.jpg',
-    alt: 'Professional installer mounting a CCTV camera on building wall',
+    alt: 'Professional installer mounting a CCTV camera on a building wall',
     span: 'md:col-span-2',
+  },
+  {
+    src: '/gallery/video-surveillance-installation.jpg',
+    alt: 'CCTV installation equipment and wiring photographed on site',
+    credit: 'Video Surveillance Installation by Artechvideo',
+    creditUrl: 'https://commons.wikimedia.org/wiki/File:Video_Surveillance_Installation.jpg',
+    span: '',
   },
 ]
 
@@ -91,6 +90,16 @@ export function Gallery() {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1E]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {img?.credit && (
+                  <a
+                    href={img.creditUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute bottom-2 left-2 right-2 text-[10px] text-white/70 underline underline-offset-2"
+                  >
+                    {img.credit} · CC BY-SA 4.0
+                  </a>
+                )}
               </div>
             </motion.div>
           ))}
