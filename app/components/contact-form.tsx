@@ -1,8 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, CheckCircle2, AlertCircle, User, Mail, Phone, MapPin, Building2, Camera, Calendar, FileText } from 'lucide-react'
+import { Send, CheckCircle2, AlertCircle, User, Mail, Phone, MapPin, Building2, Camera, Calendar, FileText, ClipboardCheck } from 'lucide-react'
+import {
+  QUOTE_PREFILL_STORAGE_KEY,
+  QUOTE_PREFILL_EVENT,
+  type QuotePrefillPayload,
+} from '@/lib/quote-configurator.ts'
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -14,9 +19,46 @@ export function ContactForm() {
     cameraCount: '',
     installationDate: '',
     notes: '',
+    configuratorSummary: '',
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [prefilledFromConfigurator, setPrefilledFromConfigurator] = useState(false)
+
+  // Apply a configuration summary coming from the CCTV Quote Configurator, either
+  // in-page (CustomEvent) or after navigating from the standalone /quote page (sessionStorage).
+  const applyPrefill = (payload: QuotePrefillPayload | null | undefined) => {
+    if (!payload?.configuratorSummary) return
+    setFormData((prev: any) => ({
+      ...(prev ?? {}),
+      configuratorSummary: payload.configuratorSummary ?? '',
+      // Only fill the enquiry selects if the user has not already chosen a value.
+      propertyType: prev?.propertyType || payload.propertyType || '',
+      cameraCount: prev?.cameraCount || payload.cameraCount || '',
+      // Prepend the readable summary to the notes so it is always visible/submitted.
+      notes: prev?.notes
+        ? `${payload.configuratorSummary}\n\n${prev.notes}`
+        : payload.configuratorSummary,
+    }))
+    setPrefilledFromConfigurator(true)
+  }
+
+  useEffect(() => {
+    // On mount, pick up any handoff stored by the /quote page, then clear it.
+    try {
+      const raw = window.sessionStorage.getItem(QUOTE_PREFILL_STORAGE_KEY)
+      if (raw) {
+        applyPrefill(JSON.parse(raw) as QuotePrefillPayload)
+        window.sessionStorage.removeItem(QUOTE_PREFILL_STORAGE_KEY)
+      }
+    } catch (_) {
+      // Ignore storage/parse errors — the form still works without a prefill.
+    }
+
+    const onPrefill = (e: Event) => applyPrefill((e as CustomEvent<QuotePrefillPayload>)?.detail)
+    window.addEventListener(QUOTE_PREFILL_EVENT, onPrefill as EventListener)
+    return () => window.removeEventListener(QUOTE_PREFILL_EVENT, onPrefill as EventListener)
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData((prev: any) => ({ ...(prev ?? {}), [e?.target?.name ?? '']: e?.target?.value ?? '' }))
@@ -38,7 +80,8 @@ export function ContactForm() {
         throw new Error(data?.error ?? 'Failed to submit')
       }
       setStatus('success')
-      setFormData({ fullName: '', email: '', phone: '', postcode: '', propertyType: '', cameraCount: '', installationDate: '', notes: '' })
+      setPrefilledFromConfigurator(false)
+      setFormData({ fullName: '', email: '', phone: '', postcode: '', propertyType: '', cameraCount: '', installationDate: '', notes: '', configuratorSummary: '' })
     } catch (err: any) {
       setStatus('error')
       setErrorMessage(err?.message ?? 'Something went wrong. Please try again.')
@@ -103,6 +146,16 @@ export function ContactForm() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="p-6 sm:p-10 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm"
         >
+          {prefilledFromConfigurator && (
+            <div className="mb-6 p-4 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/25 flex items-start gap-3">
+              <ClipboardCheck className="w-5 h-5 text-[#0066FF] flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-white/70 leading-relaxed">
+                We&apos;ve added your CCTV configuration to the message below. Just add your contact
+                details and we&apos;ll be in touch with a tailored recommendation after a free site survey.
+              </p>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Full Name */}
             <div className="relative">

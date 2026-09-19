@@ -17,6 +17,11 @@ const nextConfig = {
   },
   images: { unoptimized: true },
   webpack: (config, { isServer }) => {
+    // Ensure the "@/*" path alias (declared in tsconfig.json) is honoured by webpack
+    // in every build environment. Without this, some environments fail to pick up the
+    // tsconfig `paths` config and report "Module not found: Can't resolve '@/...'".
+    config.resolve = config.resolve || {};
+    config.resolve.alias = { ...(config.resolve.alias || {}), '@': __dirname };
     if (!isServer) {
       config.output.filename = 'static/chunks/[name]-[contenthash:8].js';
       config.output.chunkFilename = 'static/chunks/[contenthash:16].js';
