@@ -26,9 +26,9 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-20 sm:py-28 lg:py-32 bg-[#080C19]">
+    <section id="how-it-works" className="relative py-20 sm:py-28 lg:py-32 bg-[#F4F7FB]">
       {/* Subtle gradient accent */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0066FF]/20 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0066FF]/15 to-transparent" />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         <motion.div
@@ -38,20 +38,20 @@ export function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full border border-[#0066FF]/30 bg-[#0066FF]/10 text-[#0066FF] text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-[#0066FF]/20 bg-[#0066FF]/[0.08] text-[#0066FF] text-sm font-medium mb-4">
             Simple Process
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[#0A0F1E] tracking-tight mb-4">
             How It <span className="text-[#0066FF]">Works</span>
           </h2>
-          <p className="text-white/50 max-w-xl mx-auto text-base sm:text-lg">
+          <p className="text-[#55607A] max-w-xl mx-auto text-base sm:text-lg">
             From survey to setup, we handle everything so you can focus on what matters.
           </p>
         </motion.div>
 
         <div className="relative">
           {/* Connection line */}
-          <div className="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0066FF]/20 to-transparent -translate-y-1/2" />
+          <div className="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0066FF]/15 to-transparent -translate-y-1/2" />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {steps?.map((step: any, index: number) => {
@@ -66,15 +66,15 @@ export function HowItWorks() {
                   className="relative text-center group"
                 >
                   <div className="relative inline-flex items-center justify-center mb-6">
-                    <div className="w-20 h-20 rounded-2xl bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center group-hover:bg-[#0066FF]/20 group-hover:border-[#0066FF]/40 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-[#0066FF]/10">
+                    <div className="w-20 h-20 rounded-2xl bg-white border border-[#E3E9F2] flex items-center justify-center group-hover:border-[#0066FF]/30 group-hover:shadow-lg group-hover:shadow-[#0066FF]/[0.08] transition-all duration-500 shadow-sm">
                       <Icon className="w-8 h-8 text-[#0066FF]" />
                     </div>
                     <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[#0066FF] text-white text-xs font-bold flex items-center justify-center">
                       {step?.number ?? ''}
                     </span>
                   </div>
-                  <h3 className="font-display text-xl font-bold text-white mb-3">{step?.title ?? ''}</h3>
-                  <p className="text-white/50 text-sm leading-relaxed max-w-xs mx-auto">{step?.description ?? ''}</p>
+                  <h3 className="font-display text-xl font-bold text-[#0A0F1E] mb-3">{step?.title ?? ''}</h3>
+                  <p className="text-[#55607A] text-sm leading-relaxed max-w-xs mx-auto">{step?.description ?? ''}</p>
                 </motion.div>
               )
             })}
@@ -82,7 +82,7 @@ export function HowItWorks() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0066FF]/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0066FF]/15 to-transparent" />
     </section>
   )
 }

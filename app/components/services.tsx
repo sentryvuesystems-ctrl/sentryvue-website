@@ -10,7 +10,7 @@ const packages = [
     description: 'Perfect for homeowners looking to secure their property with professional-grade CCTV.',
     cameras: '2–4 Cameras',
     icon: Home,
-    features: ['HD ColorVu Cameras', 'Remote App Access', 'Motion Detection Alerts', 'Professional Installation', '2-Year Warranty'],
+    features: ['HD ColorVu Cameras', 'Remote App Access', 'Motion Detection Alerts', 'Professional Installation', '1-Year Warranty'],
     popular: false,
   },
   {
@@ -19,7 +19,7 @@ const packages = [
     description: 'Comprehensive coverage for shops, offices, and small commercial properties.',
     cameras: '4–8 Cameras',
     icon: Building2,
-    features: ['4K Ultra HD Cameras', 'Remote App Access', 'Night Vision (ColorVu)', 'Vandal-Proof Housing', 'Free Site Survey', '2-Year Warranty'],
+    features: ['4K Ultra HD Cameras', 'Remote App Access', 'Night Vision (ColorVu)', 'Vandal-Proof Housing', 'Free Site Survey', '1-Year Warranty'],
     popular: true,
   },
   {
@@ -28,7 +28,7 @@ const packages = [
     description: 'Enterprise-level security for warehouses, car parks, and large-scale operations.',
     cameras: '8+ Cameras',
     icon: Factory,
-    features: ['4K Ultra HD + PTZ Cameras', 'AI Analytics & Alerts', 'Multi-Site Management', 'License Plate Recognition', 'Dedicated Support', '2-Year Warranty'],
+    features: ['4K Ultra HD + PTZ Cameras', 'AI Analytics & Alerts', 'Multi-Site Management', 'License Plate Recognition', 'Dedicated Support', '1-Year Warranty'],
     popular: false,
   },
 ]
@@ -39,7 +39,7 @@ export function Services() {
   }
 
   return (
-    <section id="services" className="relative py-20 sm:py-28 lg:py-32">
+    <section id="services" className="relative py-20 sm:py-28 lg:py-32 bg-white">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -48,14 +48,14 @@ export function Services() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full border border-[#0066FF]/30 bg-[#0066FF]/10 text-[#0066FF] text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-[#0066FF]/20 bg-[#0066FF]/[0.08] text-[#0066FF] text-sm font-medium mb-4">
             <Camera className="w-3.5 h-3.5 inline mr-1.5 -mt-0.5" />
             Our Packages
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[#0A0F1E] tracking-tight mb-4">
             Security Solutions for <span className="text-[#0066FF]">Every Need</span>
           </h2>
-          <p className="text-white/50 max-w-xl mx-auto text-base sm:text-lg">
+          <p className="text-[#55607A] max-w-xl mx-auto text-base sm:text-lg">
             Whether you need a few cameras for your home or a full commercial setup, we have the right package.
           </p>
         </motion.div>
@@ -73,7 +73,7 @@ export function Services() {
                 className={`relative group rounded-2xl p-[1px] transition-all duration-500 ${
                   pkg?.popular
                     ? 'bg-gradient-to-b from-[#0066FF]/50 to-[#0066FF]/10'
-                    : 'bg-white/10 hover:bg-gradient-to-b hover:from-[#0066FF]/30 hover:to-transparent'
+                    : 'bg-[#E3E9F2] hover:bg-gradient-to-b hover:from-[#0066FF]/30 hover:to-transparent'
                 }`}
               >
                 {pkg?.popular && (
@@ -81,20 +81,20 @@ export function Services() {
                     Most Popular
                   </div>
                 )}
-                <div className="relative bg-[#0A0F1E] rounded-2xl p-6 sm:p-8 h-full flex flex-col">
-                  <div className="w-12 h-12 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center mb-5 group-hover:bg-[#0066FF]/20 transition-colors">
+                <div className="relative bg-white rounded-2xl p-6 sm:p-8 h-full flex flex-col shadow-sm">
+                  <div className="w-12 h-12 rounded-xl bg-[#0066FF]/[0.08] border border-[#0066FF]/15 flex items-center justify-center mb-5 group-hover:bg-[#0066FF]/15 transition-colors">
                     <Icon className="w-6 h-6 text-[#0066FF]" />
                   </div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-1">{pkg?.name ?? ''}</h3>
+                  <h3 className="font-display text-2xl font-bold text-[#0A0F1E] mb-1">{pkg?.name ?? ''}</h3>
                   <p className="text-[#0066FF] text-sm font-medium mb-2">{pkg?.subtitle ?? ''}</p>
-                  <p className="text-white/50 text-sm mb-4 leading-relaxed">{pkg?.description ?? ''}</p>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-medium mb-6 w-fit">
+                  <p className="text-[#55607A] text-sm mb-4 leading-relaxed">{pkg?.description ?? ''}</p>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#F4F7FB] border border-[#E3E9F2] text-[#0A0F1E] text-sm font-medium mb-6 w-fit">
                     <Camera className="w-4 h-4 text-[#0066FF]" />
                     {pkg?.cameras ?? ''}
                   </div>
                   <ul className="space-y-3 mb-8 flex-1">
                     {(pkg?.features ?? [])?.map((feature: string, i: number) => (
-                      <li key={i} className="flex items-start gap-2.5 text-sm text-white/70">
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-[#55607A]">
                         <Check className="w-4 h-4 text-[#0066FF] mt-0.5 flex-shrink-0" />
                         {feature ?? ''}
                       </li>
@@ -105,7 +105,7 @@ export function Services() {
                     className={`w-full py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 group/btn ${
                       pkg?.popular
                         ? 'bg-[#0066FF] hover:bg-[#0055DD] text-white hover:shadow-lg hover:shadow-[#0066FF]/25'
-                        : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20'
+                        : 'bg-[#F4F7FB] hover:bg-[#0066FF]/[0.08] text-[#0A0F1E] border border-[#E3E9F2] hover:border-[#0066FF]/30'
                     }`}
                   >
                     Get a Quote
