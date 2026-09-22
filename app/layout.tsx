@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: 'SentryVue Systems | See More. Stay Secure.',
   description: 'Professional CCTV installation across the North of England. From residential to commercial, SentryVue Systems delivers premium security camera solutions with expert installation and 24/7 remote access.',
   icons: {
