@@ -10,6 +10,7 @@ const navItems = [
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Why SentryVue', href: '#why-sentryvue' },
   { label: 'Gallery', href: '#gallery' },
+  { label: 'Configure', href: '/configure' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -25,8 +26,19 @@ export function Header() {
 
   const handleNav = (href: string) => {
     setMobileOpen(false)
+    // Full-page routes (e.g. /configure) navigate directly.
+    if (href.startsWith('/')) {
+      window.location.href = href
+      return
+    }
+    // Hash links scroll on the home page; if the section isn't on the current
+    // page (e.g. we're on /configure), fall back to the home page anchor.
     const el = document.querySelector(href)
-    el?.scrollIntoView({ behavior: 'smooth' })
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      window.location.href = `/${href}`
+    }
   }
 
   return (
@@ -57,8 +69,14 @@ export function Header() {
               </button>
             ))}
             <button
+              onClick={() => handleNav('/configure')}
+              className="ml-2 px-5 py-2.5 bg-white border border-[#0066FF]/30 text-[#0066FF] hover:bg-[#0066FF]/[0.06] text-sm font-semibold rounded-lg transition-all"
+            >
+              Build Your System →
+            </button>
+            <button
               onClick={() => handleNav('#contact')}
-              className="ml-2 px-5 py-2.5 bg-[#0066FF] hover:bg-[#0055DD] text-white text-sm font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-[#0066FF]/25"
+              className="ml-1 px-5 py-2.5 bg-[#0066FF] hover:bg-[#0055DD] text-white text-sm font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-[#0066FF]/25"
             >
               Get a Quote
             </button>
@@ -93,8 +111,14 @@ export function Header() {
                 </button>
               ))}
               <button
+                onClick={() => handleNav('/configure')}
+                className="mt-4 py-3 px-4 bg-white border border-[#0066FF]/30 text-[#0066FF] text-lg font-semibold rounded-lg text-center transition-all"
+              >
+                Build Your System →
+              </button>
+              <button
                 onClick={() => handleNav('#contact')}
-                className="mt-4 py-3 px-4 bg-[#0066FF] hover:bg-[#0055DD] text-white text-lg font-semibold rounded-lg text-center transition-all"
+                className="mt-2 py-3 px-4 bg-[#0066FF] hover:bg-[#0055DD] text-white text-lg font-semibold rounded-lg text-center transition-all"
               >
                 Get a Quote
               </button>
