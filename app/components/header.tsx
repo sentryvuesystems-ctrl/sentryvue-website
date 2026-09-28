@@ -9,7 +9,6 @@ const navItems = [
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Why SentryVue', href: '#why-sentryvue' },
   { label: 'Gallery', href: '#gallery' },
-  { label: 'Build a Quote', href: '#quote-configurator' },
   { label: 'Contact', href: '#contact' },
 ]
 
