@@ -4,7 +4,6 @@ import { Services } from './components/services'
 import { HowItWorks } from './components/how-it-works'
 import { WhySentryVue } from './components/why-sentryvue'
 import { Gallery } from './components/gallery'
-import { QuoteConfigurator } from './components/quote-configurator'
 import { ContactForm } from './components/contact-form'
 import { Footer } from './components/footer'
 
@@ -17,7 +16,6 @@ export default function Home() {
       <HowItWorks />
       <WhySentryVue />
       <Gallery />
-      <QuoteConfigurator />
       <ContactForm />
       <Footer />
     </main>
