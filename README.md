@@ -38,6 +38,20 @@ npm run start
 
 Set `NEXT_OUTPUT_MODE=standalone` to produce a standalone Next.js server bundle for container/self-hosted deployments. Leave it unset for the default build. The build no longer performs any hosting-provider-specific injection, so it runs identically on any host.
 
+## Canonical branch and Vercel + Neon
+
+- `main` is the single canonical branch. The Vercel project's **Production Branch** should be `main`
+  (Vercel → Project → Settings → Git). Feature work goes on short-lived branches with a PR into `main`.
+- Set `DATABASE_URL` per Vercel environment. Production should use the Neon **production** branch's
+  pooled connection string (host contains `-pooler`, include `sslmode=require`). Preview and Development
+  should use a separate Neon branch, not the production database.
+- Migrations are **not** run automatically during the Vercel build. Apply them deliberately with
+  `npm run db:migrate` against the intended database (see troubleshooting below for baselining an
+  existing database).
+- `GET /api/health` is a read-only check that returns booleans only (`databaseUrlConfigured`,
+  `databaseReachable`, `enquiryTableExists`, `emailConfigured`) plus `VERCEL_ENV` and the short commit SHA.
+  It returns HTTP 200 when the database is reachable and the `ContactSubmission` table exists, otherwise 503.
+
 ## Required environment variables
 
 - `DATABASE_URL` — PostgreSQL connection string.
