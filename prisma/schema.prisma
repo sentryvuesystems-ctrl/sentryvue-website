@@ -25,3 +25,38 @@ model ContactSubmission {
   @@index([createdAt])
   @@index([status])
 }
+
+model Order {
+  id              String   @id @default(cuid())
+  reference       String   @unique
+  status          String   @default("pending")
+  placement       String
+  cameraCount     Int
+  indoorCount     Int
+  outdoorCount    Int
+  resolution      String
+  kitName         String
+  storageTb       Int
+  kitPence        Int
+  storagePence    Int
+  discountPence   Int
+  subtotalPence   Int
+  deliveryPence   Int?
+  totalPence      Int
+  launchOffer     Boolean  @default(false)
+  paymentMethod   String
+  stripeSessionId String?
+  fullName        String
+  email           String
+  phone           String
+  addressLine1    String
+  addressLine2    String?
+  city            String
+  county          String?
+  postcode        String
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+}
