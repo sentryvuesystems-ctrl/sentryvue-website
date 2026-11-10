@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, CheckCircle2, AlertCircle, User, Mail, Phone, MapPin, Building2, Camera, Calendar, FileText, ClipboardCheck } from 'lucide-react'
+import { Send, CheckCircle2, AlertCircle, User, Mail, Phone, MapPin, Building2, Camera, Calendar, FileText, ClipboardCheck, MessageCircle } from 'lucide-react'
 import {
   QUOTE_PREFILL_STORAGE_KEY,
   QUOTE_PREFILL_EVENT,
@@ -25,36 +25,26 @@ export function ContactForm() {
   const [errorMessage, setErrorMessage] = useState('')
   const [prefilledFromConfigurator, setPrefilledFromConfigurator] = useState(false)
 
-  // Apply a configuration summary coming from the CCTV Quote Configurator, either
-  // in-page (CustomEvent) or after navigating from the standalone /quote page (sessionStorage).
   const applyPrefill = (payload: QuotePrefillPayload | null | undefined) => {
     if (!payload?.configuratorSummary) return
     setFormData((prev: any) => ({
       ...(prev ?? {}),
       configuratorSummary: payload.configuratorSummary ?? '',
-      // Only fill the enquiry selects if the user has not already chosen a value.
       propertyType: prev?.propertyType || payload.propertyType || '',
       cameraCount: prev?.cameraCount || payload.cameraCount || '',
-      // Prepend the readable summary to the notes so it is always visible/submitted.
-      notes: prev?.notes
-        ? `${payload.configuratorSummary}\n\n${prev.notes}`
-        : payload.configuratorSummary,
+      notes: prev?.notes ? `${payload.configuratorSummary}\n\n${prev.notes}` : payload.configuratorSummary,
     }))
     setPrefilledFromConfigurator(true)
   }
 
   useEffect(() => {
-    // On mount, pick up any handoff stored by the /quote page, then clear it.
     try {
       const raw = window.sessionStorage.getItem(QUOTE_PREFILL_STORAGE_KEY)
       if (raw) {
         applyPrefill(JSON.parse(raw) as QuotePrefillPayload)
         window.sessionStorage.removeItem(QUOTE_PREFILL_STORAGE_KEY)
       }
-    } catch (_) {
-      // Ignore storage/parse errors — the form still works without a prefill.
-    }
-
+    } catch (_) {}
     const onPrefill = (e: Event) => applyPrefill((e as CustomEvent<QuotePrefillPayload>)?.detail)
     window.addEventListener(QUOTE_PREFILL_EVENT, onPrefill as EventListener)
     return () => window.removeEventListener(QUOTE_PREFILL_EVENT, onPrefill as EventListener)
@@ -91,17 +81,17 @@ export function ContactForm() {
 
   if (status === 'success') {
     return (
-      <section id="contact" className="relative py-20 sm:py-28 lg:py-32">
+      <section id="contact" className="relative py-20 sm:py-28 lg:py-32 bg-white">
         <div className="max-w-[600px] mx-auto px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="p-8 sm:p-12 rounded-2xl bg-white/[0.03] border border-[#0066FF]/20 glow-blue-border"
+            className="p-8 sm:p-12 rounded-2xl bg-[#F4F7FB] border border-[#0066FF]/20 glow-blue-border"
           >
             <CheckCircle2 className="w-16 h-16 text-[#0066FF] mx-auto mb-6" />
-            <h3 className="font-display text-2xl sm:text-3xl font-bold text-white mb-4">Thank You!</h3>
-            <p className="text-white/60 text-base leading-relaxed mb-6">
+            <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0F1E] mb-4">Thank You!</h3>
+            <p className="text-[#55607A] text-base leading-relaxed mb-6">
               Your quote request has been received. We will be in touch within 24 hours to arrange your free site survey.
             </p>
             <button
@@ -117,7 +107,7 @@ export function ContactForm() {
   }
 
   return (
-    <section id="contact" className="relative py-20 sm:py-28 lg:py-32">
+    <section id="contact" className="relative py-20 sm:py-28 lg:py-32 bg-white">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -126,16 +116,36 @@ export function ContactForm() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full border border-[#0066FF]/30 bg-[#0066FF]/10 text-[#0066FF] text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-[#0066FF]/20 bg-[#0066FF]/[0.08] text-[#0066FF] text-sm font-medium mb-4">
             <Send className="w-3.5 h-3.5 inline mr-1.5 -mt-0.5" />
             Get in Touch
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[#0A0F1E] tracking-tight mb-4">
             Request a Free <span className="text-[#0066FF]">Quote</span>
           </h2>
-          <p className="text-white/50 max-w-lg mx-auto text-base sm:text-lg">
+          <p className="text-[#55607A] max-w-lg mx-auto text-base sm:text-lg">
             Tell us about your property and we will provide a free, no-obligation quote.
           </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+            <a
+              href="tel:+447512621107"
+              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#0066FF] text-white font-medium text-sm hover:bg-[#0052cc] transition-colors w-full sm:w-auto justify-center"
+            >
+              <Phone className="w-4 h-4" />
+              <span suppressHydrationWarning>Call 07512 621107</span>
+            </a>
+            <a
+              href="https://wa.me/447512621107"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#25D366] text-white font-medium text-sm hover:bg-[#1eb955] transition-colors w-full sm:w-auto justify-center"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp Us
+            </a>
+          </div>
+          <p className="text-[#98A1B3] text-xs mt-3">Prefer to talk? Call or message us directly.</p>
         </motion.div>
 
         <motion.form
@@ -144,24 +154,21 @@ export function ContactForm() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="p-6 sm:p-10 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm"
+          className="p-6 sm:p-10 rounded-2xl bg-[#F4F7FB] border border-[#E3E9F2] shadow-sm"
         >
           {prefilledFromConfigurator && (
-            <div className="mb-6 p-4 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/25 flex items-start gap-3">
+            <div className="mb-6 p-4 rounded-xl bg-[#0066FF]/[0.08] border border-[#0066FF]/20 flex items-start gap-3">
               <ClipboardCheck className="w-5 h-5 text-[#0066FF] flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-white/70 leading-relaxed">
-                We&apos;ve added your CCTV configuration to the message below. Just add your contact
-                details and we&apos;ll be in touch with a tailored recommendation after a free site survey.
-              </p>
+              <p className="text-sm text-[#55607A] leading-relaxed">We&apos;ve added your CCTV configuration to the message below. Add your contact details and we&apos;ll be in touch.</p>
             </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Full Name */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Full Name *</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Full Name *</label>
               <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3]" />
                 <input
                   type="text"
                   name="fullName"
@@ -169,16 +176,16 @@ export function ContactForm() {
                   onChange={handleChange}
                   required
                   placeholder="John Smith"
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] placeholder:text-[#98A1B3] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Email Address *</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Email Address *</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3]" />
                 <input
                   type="email"
                   name="email"
@@ -186,16 +193,16 @@ export function ContactForm() {
                   onChange={handleChange}
                   required
                   placeholder="john@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] placeholder:text-[#98A1B3] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
                 />
               </div>
             </div>
 
             {/* Phone */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Phone Number *</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Phone Number *</label>
               <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3]" />
                 <input
                   type="tel"
                   name="phone"
@@ -203,16 +210,16 @@ export function ContactForm() {
                   onChange={handleChange}
                   required
                   placeholder="07XXX XXXXXX"
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] placeholder:text-[#98A1B3] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
                 />
               </div>
             </div>
 
             {/* Postcode */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Postcode *</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Postcode *</label>
               <div className="relative">
-                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3]" />
                 <input
                   type="text"
                   name="postcode"
@@ -220,22 +227,22 @@ export function ContactForm() {
                   onChange={handleChange}
                   required
                   placeholder="HD1 2AB"
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] placeholder:text-[#98A1B3] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm"
                 />
               </div>
             </div>
 
             {/* Property Type */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Property Type *</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Property Type *</label>
               <div className="relative">
-                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3] pointer-events-none" />
                 <select
                   name="propertyType"
                   value={formData?.propertyType ?? ''}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm appearance-none cursor-pointer [&>option]:bg-[#0A0F1E] [&>option]:text-white"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm appearance-none cursor-pointer"
                 >
                   <option value="" disabled>Select property type</option>
                   <option value="Residential">Residential</option>
@@ -247,15 +254,15 @@ export function ContactForm() {
 
             {/* Camera Count */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Number of Cameras *</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Number of Cameras *</label>
               <div className="relative">
-                <Camera className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+                <Camera className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3] pointer-events-none" />
                 <select
                   name="cameraCount"
                   value={formData?.cameraCount ?? ''}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm appearance-none cursor-pointer [&>option]:bg-[#0A0F1E] [&>option]:text-white"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm appearance-none cursor-pointer"
                 >
                   <option value="" disabled>Select camera count</option>
                   <option value="1-4">1–4 Cameras</option>
@@ -267,38 +274,38 @@ export function ContactForm() {
 
             {/* Installation Date */}
             <div className="relative">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Preferred Installation Date</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Preferred Installation Date</label>
               <div className="relative">
-                <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+                <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A1B3] pointer-events-none" />
                 <input
                   type="date"
                   name="installationDate"
                   value={formData?.installationDate ?? ''}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm [color-scheme:dark]"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm [color-scheme:light]"
                 />
               </div>
             </div>
 
             {/* Notes */}
             <div className="sm:col-span-2">
-              <label className="block text-sm text-white/70 mb-2 font-medium">Additional Notes</label>
+              <label className="block text-sm text-[#0A0F1E]/70 mb-2 font-medium">Additional Notes</label>
               <div className="relative">
-                <FileText className="absolute left-3.5 top-3.5 w-4 h-4 text-white/30" />
+                <FileText className="absolute left-3.5 top-3.5 w-4 h-4 text-[#98A1B3]" />
                 <textarea
                   name="notes"
                   value={formData?.notes ?? ''}
                   onChange={handleChange}
                   rows={4}
                   placeholder="Tell us about your security requirements..."
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm resize-none"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E3E9F2] rounded-xl text-[#0A0F1E] placeholder:text-[#98A1B3] focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-sm resize-none"
                 />
               </div>
             </div>
           </div>
 
           {status === 'error' && (
-            <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-2 text-red-400 text-sm">
+            <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2 text-red-600 text-sm">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               {errorMessage ?? 'Something went wrong.'}
             </div>
@@ -322,7 +329,7 @@ export function ContactForm() {
             )}
           </button>
 
-          <p className="mt-4 text-center text-xs text-white/30">
+          <p className="mt-4 text-center text-xs text-[#98A1B3]">
             Your information is stored securely and will only be used to contact you about your enquiry.
           </p>
         </motion.form>

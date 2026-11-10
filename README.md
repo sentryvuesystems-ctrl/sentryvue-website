@@ -9,25 +9,48 @@ Next.js 13, React 18, TypeScript, Tailwind CSS, Prisma, and PostgreSQL.
 ## Local setup
 
 1. Install Node.js 18.17+ and npm.
-2. Run `npm install`.
+2. Run `npm install` (this also runs `prisma generate` via the `postinstall` hook).
 3. Copy `.env.example` to `.env.local` and provide the deployment values.
-4. Run `npx prisma generate`.
-5. Apply migrations with `npx prisma migrate deploy` when a PostgreSQL database is available.
-6. Run `npm run dev` for local development.
+4. Apply migrations with `npm run db:migrate` when a PostgreSQL database is available.
+5. Run `npm run dev` for local development.
+
+## npm scripts
+
+- `npm run dev` — start the Next.js dev server.
+- `npm run build` — runs `prisma generate && next build`, so the Prisma client is always generated before the production build. This makes the build self-contained and portable across hosts.
+- `npm run start` — start the production server (`next start`).
+- `npm run db:migrate` — runs `prisma migrate deploy` to apply migrations against `DATABASE_URL`.
 
 ## Production deployment
 
 Use any Node-compatible host that supports a Next.js server and a reachable PostgreSQL database. Set the environment variables below in the host dashboard, then run:
 
 ```text
-npm install
-npx prisma generate
-npx prisma migrate deploy
+npm ci
+npm run db:migrate
 npm run build
 npm run start
 ```
 
-The application listens on the host-provided `PORT` through `next start`. Do not commit `.env` files or provider credentials.
+`npm run build` regenerates the Prisma client automatically, so no separate `prisma generate` step is required. The application listens on the host-provided `PORT` through `next start`. Do not commit `.env` files or provider credentials.
+
+### Optional build output mode
+
+Set `NEXT_OUTPUT_MODE=standalone` to produce a standalone Next.js server bundle for container/self-hosted deployments. Leave it unset for the default build. The build no longer performs any hosting-provider-specific injection, so it runs identically on any host.
+
+## Canonical branch and Vercel + Neon
+
+- `main` is the single canonical branch. The Vercel project's **Production Branch** should be `main`
+  (Vercel → Project → Settings → Git). Feature work goes on short-lived branches with a PR into `main`.
+- Set `DATABASE_URL` per Vercel environment. Production should use the Neon **production** branch's
+  pooled connection string (host contains `-pooler`, include `sslmode=require`). Preview and Development
+  should use a separate Neon branch, not the production database.
+- Migrations are **not** run automatically during the Vercel build. Apply them deliberately with
+  `npm run db:migrate` against the intended database (see troubleshooting below for baselining an
+  existing database).
+- `GET /api/health` is a read-only check that returns booleans only (`databaseUrlConfigured`,
+  `databaseReachable`, `enquiryTableExists`, `emailConfigured`) plus `VERCEL_ENV` and the short commit SHA.
+  It returns HTTP 200 when the database is reachable and the `ContactSubmission` table exists, otherwise 503.
 
 ## Required environment variables
 
@@ -44,6 +67,34 @@ Email alerts use Resend:
 
 The email notification is formatted as an order sheet and includes the SentryVue logo, brand colours, and every submitted enquiry field.
 
+## Troubleshooting: enquiry / quote not saving
+
+If the enquiry or quote form returns "An unexpected error occurred. Please try again."
+even though the fields are valid, the API route caught an error while writing to the
+database or the DB write itself failed. Check the following, in order:
+
+1. **The `ContactSubmission` table must exist.** A baseline migration lives in
+   `prisma/migrations/0_init`. Apply it once against the production database:
+   - Fresh database (table does not exist yet): `npx prisma migrate deploy`.
+   - Database already provisioned via an earlier `prisma db push` (table already
+     exists): baseline the migration first so it is not re-applied, then deploy:
+     `npx prisma migrate resolve --applied 0_init` followed by
+     `npx prisma migrate deploy`.
+2. **`DATABASE_URL` must be set** in the host/Vercel project settings and point at the
+   Neon/PostgreSQL database. Never commit this value.
+3. **`RESEND_API_KEY` must be spelled exactly** (uppercase, underscores). The code reads
+   `process.env.RESEND_API_KEY`; a variable named `Resend_API_Key` (mixed case) will be
+   ignored and email alerts will be skipped. Email is decoupled from the DB write — a
+   missing/wrong Resend key no longer causes a failed submission, it only skips the alert.
+4. **Prisma client binary target.** `prisma/schema.prisma` declares Vercel-compatible
+   `binaryTargets` (`rhel-openssl-1.0.x`, `rhel-openssl-3.0.x`) so the client generated
+   during `postinstall` matches the serverless runtime. `prisma generate` runs on install.
+
+Note: the standalone configurator endpoint (`/api/configure-enquiry`) lives on the
+`feature/buy-now-configurator` branch and is not part of `main` (the `/quote` route
+redirects to `/#contact` here). That endpoint already applies the same email-decoupling
+fix; enabling it is a separate change from this persistence fix.
+
 ## Deployment portability notes
 
 - The Prisma client uses the standard generated location; it no longer contains a machine-specific absolute path.
@@ -51,3 +102,24 @@ The email notification is formatted as an order sheet and includes the SentryVue
 - Persistent data belongs in PostgreSQL, not the local filesystem.
 - Email provider credentials must be configured per host as environment variables.
 - Domain DNS, HTTPS, and any provider callback/verification settings must be updated when changing hosts.
+
+## Updating gallery photos
+
+Gallery photos are stored in `public/gallery/` and listed in `app/components/gallery.tsx`. To update them:
+
+1. Add each new image to `public/gallery/` using a short filename such as `driveway-installation.jpg`.
+2. Open `app/components/gallery.tsx` and update the `galleryImages` list:
+
+```ts
+{
+  src: '/gallery/driveway-installation.jpg',
+  alt: 'CCTV camera installed above a residential driveway',
+  span: '',
+}
+```
+
+3. Use a descriptive `alt` text and remove the old image entry if it should no longer appear.
+4. Commit and push the change to the production branch; Vercel will build a new deployment.
+5. Check the deployment preview before promoting it to production.
+
+Use images you own or have permission to publish. Keep files reasonably compressed (WebP or optimized JPG is preferred) and do not put private customer details in filenames or metadata.

@@ -31,12 +31,12 @@ export function Hero() {
         vx: (Math.random() - 0.5) * 0.3,
         vy: (Math.random() - 0.5) * 0.3,
         size: Math.random() * 2 + 0.5,
-        opacity: Math.random() * 0.5 + 0.1,
+        opacity: Math.random() * 0.3 + 0.08,
       })
     }
 
     const drawGrid = () => {
-      ctx.strokeStyle = 'rgba(0, 102, 255, 0.04)'
+      ctx.strokeStyle = 'rgba(0, 102, 255, 0.06)'
       ctx.lineWidth = 1
       const gridSize = 60
       for (let x = 0; x < canvas.width; x += gridSize) {
@@ -79,7 +79,7 @@ export function Hero() {
             ctx.beginPath()
             ctx.moveTo(particles[i]?.x ?? 0, particles[i]?.y ?? 0)
             ctx.lineTo(particles[j]?.x ?? 0, particles[j]?.y ?? 0)
-            ctx.strokeStyle = `rgba(0, 102, 255, ${0.08 * (1 - dist / 150)})`
+            ctx.strokeStyle = `rgba(0, 102, 255, ${0.1 * (1 - dist / 150)})`
             ctx.lineWidth = 0.5
             ctx.stroke()
           }
@@ -101,13 +101,13 @@ export function Hero() {
   }
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
       {/* Particle canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1E] via-transparent to-[#0A0F1E] z-[1]" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#0066FF]/5 rounded-full blur-[120px] z-[1]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-[#F4F7FB] z-[1]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#0066FF]/[0.04] rounded-full blur-[120px] z-[1]" />
 
       {/* Content */}
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 text-center">
@@ -117,7 +117,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-6"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0066FF]/30 bg-[#0066FF]/10 text-[#0066FF] text-sm font-medium">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0066FF]/20 bg-[#0066FF]/[0.08] text-[#0066FF] text-sm font-medium">
             <span className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" />
             Professional CCTV Installation
           </span>
@@ -127,18 +127,18 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-[1.1] mb-6"
+          className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-[#0A0F1E] tracking-tight leading-[1.1] mb-6"
         >
           See More.
           <br />
-          <span className="text-[#0066FF] glow-blue-text">Stay Secure.</span>
+          <span className="text-[#0066FF]">Stay Secure.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-base sm:text-lg md:text-xl text-[#55607A] max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Premium CCTV installation across the North of England. From Huddersfield
           to Teesside, we deliver cutting-edge security solutions for homes and
@@ -159,7 +159,7 @@ export function Hero() {
           </button>
           <button
             onClick={() => scrollTo('#services')}
-            className="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/10 hover:border-white/20 transition-all hover:-translate-y-0.5 text-base"
+            className="w-full sm:w-auto px-8 py-4 bg-[#0A0F1E]/[0.04] hover:bg-[#0A0F1E]/[0.08] text-[#0A0F1E] font-semibold rounded-xl border border-[#E3E9F2] hover:border-[#0066FF]/30 transition-all hover:-translate-y-0.5 text-base"
           >
             View Our Services
           </button>
@@ -177,7 +177,7 @@ export function Hero() {
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >
-          <ChevronDown className="w-6 h-6 text-white/30" />
+          <ChevronDown className="w-6 h-6 text-[#0A0F1E]/25" />
         </motion.div>
       </motion.div>
     </section>
