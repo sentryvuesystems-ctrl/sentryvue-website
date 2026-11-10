@@ -56,6 +56,9 @@ export function Header() {
                 {item?.label ?? ''}
               </button>
             ))}
+            <a href="/checkout" className="ml-2 px-4 py-2.5 border border-[#0A2342] text-[#0A2342] text-sm font-semibold rounded-lg hover:bg-[#0A2342] hover:text-white transition-all">
+              Buy a kit
+            </a>
             <button
               onClick={() => handleNav('#contact')}
               className="ml-2 px-5 py-2.5 bg-[#0066FF] hover:bg-[#0055DD] text-white text-sm font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-[#0066FF]/25"
@@ -92,9 +95,12 @@ export function Header() {
                   {item?.label ?? ''}
                 </button>
               ))}
+              <a href="/checkout" className="mt-4 py-3 px-4 border border-[#0A2342] text-[#0A2342] text-lg font-semibold rounded-lg text-center">
+                Buy a kit
+              </a>
               <button
                 onClick={() => handleNav('#contact')}
-                className="mt-4 py-3 px-4 bg-[#0066FF] hover:bg-[#0055DD] text-white text-lg font-semibold rounded-lg text-center transition-all"
+                className="mt-2 py-3 px-4 bg-[#0066FF] hover:bg-[#0055DD] text-white text-lg font-semibold rounded-lg text-center transition-all"
               >
                 Get a Quote
               </button>

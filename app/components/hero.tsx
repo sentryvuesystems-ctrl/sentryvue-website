@@ -157,6 +157,12 @@ export function Hero() {
           >
             Get a Free Quote
           </button>
+          <a
+            href="/checkout"
+            className="w-full sm:w-auto px-8 py-4 bg-white text-[#0A2342] font-semibold rounded-xl border border-[#0A2342] hover:bg-[#0A2342] hover:text-white transition-all hover:-translate-y-0.5 text-base text-center"
+          >
+            Buy a kit
+          </a>
           <button
             onClick={() => scrollTo('#services')}
             className="w-full sm:w-auto px-8 py-4 bg-[#0A0F1E]/[0.04] hover:bg-[#0A0F1E]/[0.08] text-[#0A0F1E] font-semibold rounded-xl border border-[#E3E9F2] hover:border-[#0066FF]/30 transition-all hover:-translate-y-0.5 text-base"

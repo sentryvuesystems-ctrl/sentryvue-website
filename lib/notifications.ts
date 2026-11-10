@@ -33,3 +33,21 @@ export async function sendEnquiryNotifications(enquiry: Enquiry) {
   const results = await Promise.allSettled(tasks)
   for (const result of results) if (result.status === 'rejected') console.error(result.reason)
 }
+
+type OrderAlert = {
+  reference: string; status: string; paymentMethod: string; placement: string; cameraCount: number
+  indoorCount: number; outdoorCount: number; resolution: string; kitName: string; storageTb: number
+  discountPence: number; deliveryPence: number | null; totalPence: number; launchOffer: boolean
+  fullName: string; email: string; phone: string; addressLine1: string; addressLine2?: string | null
+  city: string; county?: string | null; postcode: string; notes?: string | null; createdAt: Date
+}
+
+const gbp = (p: number) => `£${(p / 100).toFixed(2)}`
+
+export async function sendOrderNotification(order: OrderAlert) {
+  if (!process.env.RESEND_API_KEY) { console.warn('Email notifications are not configured; order was saved without an alert.'); return }
+  const address = [order.addressLine1, order.addressLine2, order.city, order.county, order.postcode].filter(Boolean).join(', ')
+  const html = `<!doctype html><html><body style="font-family:Arial,sans-serif;background:#eef4fb;color:#0a0f1f;"><div style="max-width:680px;margin:24px auto;background:#fff;border:1px solid #cbd8e8;border-radius:12px;padding:24px 26px;"><div style="color:#0A2342;font-weight:700;font-size:12px;letter-spacing:1.5px;">NEW WEBSITE ORDER</div><h1 style="margin:8px 0 20px;font-size:22px;">Order ${escapeHtml(order.reference)}</h1><table style="width:100%;border-collapse:collapse;border:1px solid #dbe5f2;">${row('Status', order.status)}${row('Payment method', order.paymentMethod)}${row('Submitted', formatDate(order.createdAt))}${row('Kit', order.kitName)}${row('Placement', `${order.placement} (indoor ${order.indoorCount} / outdoor ${order.outdoorCount})`)}${row('Resolution', order.resolution)}${row('Storage', `${order.storageTb}TB`)}${row('Launch offer', order.launchOffer ? `Yes (-${gbp(order.discountPence)}, free delivery)` : 'No')}${row('Delivery', order.deliveryPence === null ? 'To be confirmed' : gbp(order.deliveryPence))}${row('Total (VAT TBC)', gbp(order.totalPence))}${row('Full name', order.fullName)}${row('Email', order.email)}${row('Phone', order.phone)}${row('Delivery address', address)}${row('Notes', order.notes)}</table></div></body></html>`
+  const response = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: process.env.RESEND_FROM_EMAIL || 'SentryVue Website <onboarding@resend.dev>', to: [process.env.ENQUIRY_ALERT_EMAIL || 'sentryvuesystems@gmail.com'], subject: `New SentryVue order ${order.reference} — ${order.fullName}`, html }) })
+  if (!response.ok) throw new Error(`Order email notification failed: ${response.status}`)
+}
